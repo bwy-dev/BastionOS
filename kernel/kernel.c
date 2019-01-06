@@ -5,7 +5,7 @@ void k_main()
 	move_cur(0,0);
 	clear_screen();
 	move_cur(0,0);
-
+ 
 	//volatile unsigned char *str = "";
 	print("Loading BastionOS...\n");
 	print("Kernel version.0.0.1\n");

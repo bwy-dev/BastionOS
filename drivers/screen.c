@@ -11,7 +11,7 @@ int cur_col(int offset){return (offset - (cur_row(offset)*2*MAX_COLS))/2;}
 void print(volatile unsigned char *msg) 
 {
    for(int i = 0; msg[i] != 0; i++) 
-   {
+   { 
      	print_char(msg[i], -1, -1, WHITE_ON_BLACK);
    }
 }
