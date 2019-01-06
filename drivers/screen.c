@@ -1,6 +1,6 @@
 #include "../kernel/ports.h"
 #include "../drivers/screen.h"
-#include <stdio.h>  
+#include "../kernel/mem.h"
 /*-------------------------------------------
 These are the public functions for the class
 -------------------------------------------*/
@@ -8,11 +8,11 @@ void move_cur(int col, int row) {set_cur(get_screen_offset(col,row));}
 int cur_row(int offset){return offset / (2 * MAX_COLS);}
 int cur_col(int offset){return (offset - (cur_row(offset)*2*MAX_COLS))/2;} 
 
-void print(volatile unsigned char *msg) 
+void print(volatile unsigned char *msg, char att) 
 {
    for(int i = 0; msg[i] != 0; i++) 
    { 
-     	print_char(msg[i], -1, -1, WHITE_ON_BLACK);
+     	print_char(msg[i], -1, -1, att);
    }
 }
 

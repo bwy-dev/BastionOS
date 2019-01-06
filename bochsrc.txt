@@ -18,6 +18,7 @@ display_library: x
 
 romimage: file=/usr/share/bochs/BIOS-bochs-latest
 
+#cpu: count=1, ips=10000, reset_on_triple_fault=1
 
 megs: 32
 
@@ -165,7 +166,7 @@ floppy_bootsig_check: disabled=0
 #   log: /dev/tty
 #=======================================================================
 #log: /dev/null
-log: bochsout.txt
+log: bochsout.log
 
 #=======================================================================
 # LOGPREFIX:
@@ -310,7 +311,8 @@ com1: enabled=1, mode=file, dev=com1.out
 # For an example look at the next line:
 #=======================================================================
 
-sb16: midimode=1, midi=/dev/midi00, wavemode=1, wave=/dev/dsp, loglevel=2, log=sb16.log, dmatimer=600000
+#sb16: midimode=1, midi=/dev/midi00, wavemode=1, wave=/dev/dsp, loglevel=2, log=sb16.log, 
+#dmatimer=600000
 
 #=======================================================================
 # VGA_UPDATE_INTERVAL:

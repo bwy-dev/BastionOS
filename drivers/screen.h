@@ -5,17 +5,21 @@
 #define MAX_ROWS 25
 #define MAX_COLS 80
 #define WHITE_ON_BLACK 0x0f
+#define WHITE_ON_GREEN 0x2f
+#define WHITE_ON_RED	  0x4f
+#define GREEN_ON_BLACK 0x02
 
 // Screen I/O ports
 #define REG_SCREEN_CTRL 0x3d4
 #define REG_SCREEN_DATA 0x3d5
-
+int cur_col(int offset);
+int cur_row(int offset);
 void clear_screen();
 void move_cur(int col, int row);
 int get_cur();
 void set_cur(int offset);
 void print_char(volatile unsigned char c, int col, int row, char att);
-void print(volatile unsigned char *msg);
+void print(volatile unsigned char *msg, char att);
 int get_screen_offset(int col, int row);
 
 #endif

@@ -5,10 +5,10 @@ unsigned short com;
 
 void s_set_port(unsigned short port)
 {
-	if(port == 1){com = SERIAL_COM1_BASE;}
-	else if (port ==2){com = SERIAL_COM2_BASE;}
-	else if (port ==3){com = SERIAL_COM3_BASE;}
-	else if (port ==4){com = SERIAL_COM4_BASE;}
+	if(port == 1){com = COM1;}
+	else if (port ==2){com = COM2;}
+	else if (port ==3){com = COM3;}
+	else if (port ==4){com = COM4;}
 }
 
 /* 
@@ -19,9 +19,9 @@ void s_set_port(unsigned short port)
 */
 void sconfig_baud_rate(unsigned short divisor)
 {
-	port_byte_out(SERIAL_LINE_COMMAND_PORT(com), SERIAL_LINE_ENABLE_DLAB);
-	port_byte_out(SERIAL_DATA_PORT(com), (divisor >>8) & 0x00ff);
-	port_byte_out(SERIAL_DATA_PORT(com), divisor & 0x00ff);
+	port_byte_out(LINE_COMMAND_PORT(com), LINE_ENABLE_DLAB);
+	port_byte_out(DATA_PORT(com), (divisor >>8) & 0x00ff);
+	port_byte_out(DATA_PORT(com), divisor & 0x00ff);
 }
 
 /*
@@ -37,10 +37,11 @@ void sconfig_baud_rate(unsigned short divisor)
 *		data is set to length of 8 bits, with no parity bits, 1 stop bit and 
 *		with break control disabled.
 */
-void sconfig_line(unsigned char value)
+int sconfig_line(unsigned char value)
 {
 	if(value == 0){value = 0x03;}
-	port_byte_out(SERIAL_LINE_COMMAND_PORT(com), value);
+	port_byte_out(LINE_COMMAND_PORT(com), value);
+	return port_byte_in(LINE_COMMAND_PORT(com)) & value;
 }
 
 /*
@@ -55,36 +56,55 @@ void sconfig_line(unsigned char value)
 *		clr: Clear the reciever FIFO buffer
 *		e:	  Enables the FIFO buffer
 */
-void sconfig_buffer(unsigned char value)
+int sconfig_buffer(unsigned char value)
 {
-	if(value == 0){value = 0xc7;}
-	port_byte_out(SERIAL_FIFO_COMMAND_PORT(com), value);
+	if(value == 0){value = 0xe7;}
+	port_byte_out(BUFFER_PORT(com), value);
+	return 1;
 }
 
-void sconfig_modem(unsigned char value)
+int sconfig_modem(unsigned char value)
 {
 	if(value == 0){value = 0x03;}
-	port_byte_out(SERIAL_MODEM_COMMAND_PORT(com), value);
+	port_byte_out(MODEM_COMMAND_PORT(com), value);
+	return port_byte_in(MODEM_COMMAND_PORT(com)) & value;
 }
 
-unsigned short s_fifo_empty()
+/*
+*	returns 0 if transmit FIFO is NOT empty.
+*  returns 1 if transmit FIFO IS empty. 
+*/
+int s_is_transmit_empty()
 {
-	return port_byte_in(SERIAL_LINE_STATUS_PORT(com)& 0x20);
+	return port_byte_in(LINE_STATUS_PORT(com))& 0x20;
 }
 
-void s_write(volatile unsigned char c)
+void s_write(unsigned char c)
 {
-	while(s_fifo_empty() != 0)
+	if(s_is_transmit_empty() != 0)
 	{
-	port_byte_out(SERIAL_DATA_PORT(com), c);
+		port_byte_out(DATA_PORT(com), c);
+	}
+	else
+	{
+		s_write(c);
 	}
 }
 
-void s_print(volatile unsigned char *msg)
+void s_print(unsigned char *msg)
 {
 	for(int i = 0; msg[i] != 0; i++) 
    {
-     	s_write(msg[i]);
+   	s_write(msg[i]);     	
    }
 }
 
+int s_await_buffer_empty()
+{
+	int i;
+	while ((i =s_is_transmit_empty()) == 0)
+	{
+	s_await_buffer_empty;
+	}
+	return 1;
+}
