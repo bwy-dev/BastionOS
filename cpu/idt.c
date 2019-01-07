@@ -1,5 +1,4 @@
 #include "../cpu/idt.h"
-
 void set_idt_gate(int n, unsigned long handler)
 {
 	idt[n].low_offset = low_16(handler);

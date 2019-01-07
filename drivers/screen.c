@@ -76,6 +76,7 @@ void print_char(volatile unsigned char c, int col, int row, char att)
 	{
 		offset = get_screen_offset(col,row);
 	}
+	offset =scroll_screen(offset);
 
 	if(c == '\n')
 	{
@@ -88,8 +89,6 @@ void print_char(volatile unsigned char c, int col, int row, char att)
 	mem_print_loc = (unsigned short*)VIDEO_ADDRESS + (offset/2) ;
 	*mem_print_loc = c | (att << 8);		
 	}
-
-	scroll_screen(offset);
 	
 	offset += 2;
 	set_cur(offset);
@@ -115,26 +114,14 @@ void set_cur(int offset)
 
 int scroll_screen(int offset)
 {
-	if (offset < MAX_ROWS * MAX_COLS *2)
-	{
-		return offset;
-	}
-	int i;
-	for(i = 0; i<MAX_ROWS; i++)
-	{
-		const unsigned char *src = get_screen_offset(0,i) + VIDEO_ADDRESS;
-		unsigned char *dest = get_screen_offset(0,i-1) + VIDEO_ADDRESS;
-		memcpy(src, dest, MAX_COLS*2);
-	}
+	if (cur_row(offset) <MAX_ROWS-1){return offset;}
 
-	char *last_line = get_screen_offset(0,MAX_ROWS -1) + VIDEO_ADDRESS;
-	for(i = 0; i<MAX_COLS*2; i++)
-	{
-		last_line[i] = 0;
-	}
+	memcpy((void*) (VIDEO_ADDRESS+(MAX_COLS*2)),VIDEO_ADDRESS, 24*MAX_COLS*2);
 
-	offset -= 2* MAX_COLS;
+	memset(0 ,(void*)(VIDEO_ADDRESS+(24*MAX_COLS*2)), MAX_COLS);
 
+	set_cur(get_cur()-(MAX_COLS*2));
+	offset = get_cur();
 	return offset;
 }
 

@@ -108,6 +108,7 @@ void s_print(unsigned char *msgtype, unsigned char *msg)
    {
    	s_write(msg[i]);     	
    }
+   s_write('\n');
 }
 
 int s_await_buffer_empty()

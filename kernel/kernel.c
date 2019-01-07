@@ -5,31 +5,30 @@
 #include "../cpu/isr.h"
 #include "../cpu/idt.h"
 #include "../cpu/paging.h"
-
+#include "../drivers/keyboard.h"
 void k_main()
 {
 	clear_screen();
 
 	print("Loading BastionOS...\n", GREEN_ON_BLACK,0);
-	print("Kernel version.0.0.1\n", GREEN_ON_BLACK,0);
+	print("Kernel version %d\n", GREEN_ON_BLACK,1,KERNEL_VER);
 	k_serial_setup();
+	print("Initializing interrupts...\n", WHITE_ON_BLACK,0);
 	isr_install();
+	print("Interrupts successfully initialized\n",WHITE_ON_BLACK,0);
 	pagefile_init();
+
+	keyboard_init();
 }
 
 void k_serial_setup()
 {
-	unsigned char *SERROR = "[ERROR]: ";
-	unsigned char *SDEBUG = "[DEBUG]: ";
-	unsigned char *SINFO  = "[INFO]: ";
 	unsigned char *OK = "OK\n";
 	unsigned char *ERROR = "ERROR\n";
-	const int MSG_OFFSET = 70;
+	
 	static char buf[32] = {0};
 	int l, b, m;
-	unsigned char line_val = 0x03;
-	unsigned char buffer_val = 0xe7;
-	unsigned char modem_val = 0x03;
+
 	int baud_rate_max = 115200;
 	int divisor = 1;
 	int baud_rate = baud_rate_max / divisor;
@@ -43,7 +42,7 @@ void k_serial_setup()
 
 	print("Configuring Line", WHITE_ON_BLACK,0);
 	move_cur(MSG_OFFSET, cur_row(get_cur()));
-	if((l = sconfig_line(line_val)) == line_val)
+	if((l = sconfig_line(LINE_VAL)) == LINE_VAL)
 	{
 		print(OK, WHITE_ON_GREEN,0);
 	}
@@ -54,7 +53,7 @@ void k_serial_setup()
 
 	print("Setting up the serial buffer", WHITE_ON_BLACK,0);
 	move_cur(MSG_OFFSET, cur_row(get_cur()));
-	if((sconfig_buffer(buffer_val)) == 1)
+	if((sconfig_buffer(BUFFER_VAL)) == 1)
 	{
 		print(OK, WHITE_ON_GREEN,0);
 	}
@@ -65,7 +64,7 @@ void k_serial_setup()
 
 	print("Configuring the serial modem", WHITE_ON_BLACK,0);
 	move_cur(MSG_OFFSET, cur_row(get_cur()));
-	if((m = sconfig_modem(modem_val)) == modem_val)
+	if((m = sconfig_modem(MODEM_VAL)) == MODEM_VAL)
 	{
 		print(OK, WHITE_ON_GREEN,0);
 	}

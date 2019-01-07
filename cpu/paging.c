@@ -18,6 +18,6 @@ void pagefile_init()
 	
 	load_page_directory(page_directory);
 	enable_paging();
-	print("successfully enabled paging file! \n", WHITE_ON_BLACK,0);
+	print("successfully enabled paging file \n", WHITE_ON_BLACK,0);
 }
 

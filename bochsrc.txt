@@ -31,7 +31,7 @@ vga: extension=vbe
 
 floppya: 1_44=os-image, status=inserted
 
-boot: disk, floppy
+boot: floppy
 
 
 ata0: enabled=1, ioaddr1=0x1f0, ioaddr2=0x3f0, irq=14
@@ -93,7 +93,9 @@ ata0-master: type=disk, path="c.img", mode=flat, cylinders=20, heads=16, spt=63
 
 #ata0-master: type=disk, mode=flat, path="testing-80-2-18.img", cylinders=80, heads=2, spt=18
 #ata0-master: type=disk, mode=flat, path="c.img", cylinders=0 # autodetect
-#ata0-slave: type=cdrom, path=D:, status=inserted
+
+ata0-slave: type=cdrom, path=BastionOS.iso, status=inserted
+
 #ata0-slave: type=cdrom, path=/dev/cdrom, status=inserted
 #ata0-slave: type=cdrom, path="drive", status=inserted
 #ata0-slave: type=cdrom, path=/dev/rcd0d, status=inserted 
