@@ -10,7 +10,6 @@
 #define LINE_COMMAND_PORT(base)  (base+3)
 #define MODEM_COMMAND_PORT(base) (base+4)
 #define LINE_STATUS_PORT(base)	(base+5)
-
 #define LINE_ENABLE_DLAB 0x80
 
 void s_set_port(unsigned short port);
@@ -20,6 +19,7 @@ int sconfig_buffer(unsigned char value);
 int sconfig_modem(unsigned char value);
 int  s_is_transmit_empty();
 void s_write(unsigned char c);
-void s_print(unsigned char *msg);
+void s_print(unsigned char* msgtype, unsigned char *msg);
+int s_await_buffer_empty();
 
 #endif

@@ -20,7 +20,7 @@ romimage: file=/usr/share/bochs/BIOS-bochs-latest
 
 #cpu: count=1, ips=10000, reset_on_triple_fault=1
 
-megs: 32
+megs: 256
 
 #vgaromimage: file=bios/VGABIOS-elpin-2.40
 vgaromimage: file=/usr/share/bochs/VGABIOS-lgpl-latest
@@ -30,11 +30,11 @@ vgaromimage: file=/usr/share/bochs/VGABIOS-lgpl-latest
 vga: extension=vbe
 
 floppya: 1_44=os-image, status=inserted
-#floppya: image="FLOPPY.img", status=inserted
-boot: floppy
+
+boot: disk, floppy
 
 
-#ata0: enabled=1, ioaddr1=0x1f0, ioaddr2=0x3f0, irq=14
+ata0: enabled=1, ioaddr1=0x1f0, ioaddr2=0x3f0, irq=14
 #ata1: enabled=1, ioaddr1=0x170, ioaddr2=0x370, irq=15
 #ata2: enabled=0, ioaddr1=0x1e8, ioaddr2=0x3e0, irq=11
 #ata3: enabled=0, ioaddr1=0x168, ioaddr2=0x360, irq=9
@@ -89,7 +89,7 @@ boot: floppy
 #   ata3-slave:  type=cdrom, path=iso.sample, status=inserted
 #=======================================================================
 
-#ata0-master: type=disk, path="test.img", mode=flat, cylinders=20, heads=16, spt=63
+ata0-master: type=disk, path="c.img", mode=flat, cylinders=20, heads=16, spt=63
 
 #ata0-master: type=disk, mode=flat, path="testing-80-2-18.img", cylinders=80, heads=2, spt=18
 #ata0-master: type=disk, mode=flat, path="c.img", cylinders=0 # autodetect

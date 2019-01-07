@@ -1,6 +1,7 @@
 #include "../kernel/ports.h"
 #include "../drivers/screen.h"
 #include "../kernel/mem.h"
+#include <stdarg.h> 
 /*-------------------------------------------
 These are the public functions for the class
 -------------------------------------------*/
@@ -8,12 +9,30 @@ void move_cur(int col, int row) {set_cur(get_screen_offset(col,row));}
 int cur_row(int offset){return offset / (2 * MAX_COLS);}
 int cur_col(int offset){return (offset - (cur_row(offset)*2*MAX_COLS))/2;} 
 
-void print(volatile unsigned char *msg, char att) 
+void print(volatile unsigned char *msg, char att, int count, ...) 
 {
+	va_list args;
+   va_start(args,count);
    for(int i = 0; msg[i] != 0; i++) 
    { 
+   	
+   	if(msg[i] == '%')
+   	{
+   		i++;
+   		if(msg[i] == 'd')
+   		{
+
+   			unsigned char *var = va_arg(args, char*);
+   			for (int j = 0; var[j] != 0; j++)
+   			{
+   				print_char(var[j], -1,-1,att);
+   			}
+   			i++;
+   		}
+   	}
      	print_char(msg[i], -1, -1, att);
    }
+   va_end(args);
 }
 
 void fill_screen(char c)
@@ -70,6 +89,8 @@ void print_char(volatile unsigned char c, int col, int row, char att)
 	*mem_print_loc = c | (att << 8);		
 	}
 
+	scroll_screen(offset);
+	
 	offset += 2;
 	set_cur(offset);
 }
@@ -92,6 +113,30 @@ void set_cur(int offset)
 	port_byte_out(REG_SCREEN_DATA, (unsigned char)(offset));
 }
 
+int scroll_screen(int offset)
+{
+	if (offset < MAX_ROWS * MAX_COLS *2)
+	{
+		return offset;
+	}
+	int i;
+	for(i = 0; i<MAX_ROWS; i++)
+	{
+		const unsigned char *src = get_screen_offset(0,i) + VIDEO_ADDRESS;
+		unsigned char *dest = get_screen_offset(0,i-1) + VIDEO_ADDRESS;
+		memcpy(src, dest, MAX_COLS*2);
+	}
+
+	char *last_line = get_screen_offset(0,MAX_ROWS -1) + VIDEO_ADDRESS;
+	for(i = 0; i<MAX_COLS*2; i++)
+	{
+		last_line[i] = 0;
+	}
+
+	offset -= 2* MAX_COLS;
+
+	return offset;
+}
 
 
 

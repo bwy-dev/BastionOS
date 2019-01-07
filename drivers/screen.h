@@ -19,7 +19,8 @@ void move_cur(int col, int row);
 int get_cur();
 void set_cur(int offset);
 void print_char(volatile unsigned char c, int col, int row, char att);
-void print(volatile unsigned char *msg, char att);
+void print(volatile unsigned char *msg, char att, int count, ...);
 int get_screen_offset(int col, int row);
+int scroll_screen(int offset);
 
 #endif

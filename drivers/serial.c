@@ -2,6 +2,7 @@
 #include "../drivers/serial.h"
 
 unsigned short com;
+unsigned short div;
 
 void s_set_port(unsigned short port)
 {
@@ -19,6 +20,7 @@ void s_set_port(unsigned short port)
 */
 void sconfig_baud_rate(unsigned short divisor)
 {
+	div = divisor;
 	port_byte_out(LINE_COMMAND_PORT(com), LINE_ENABLE_DLAB);
 	port_byte_out(DATA_PORT(com), (divisor >>8) & 0x00ff);
 	port_byte_out(DATA_PORT(com), divisor & 0x00ff);
@@ -91,9 +93,18 @@ void s_write(unsigned char c)
 	}
 }
 
-void s_print(unsigned char *msg)
+void s_print(unsigned char *msgtype, unsigned char *msg)
 {
-	for(int i = 0; msg[i] != 0; i++) 
+	int i;
+	
+	for(i = 0; msgtype[i] != 0; i++) 
+   {
+   	s_write(msgtype[i]);     	
+   }
+
+   i=0;
+
+	for(i = 0; msg[i] != 0; i++) 
    {
    	s_write(msg[i]);     	
    }
@@ -102,9 +113,12 @@ void s_print(unsigned char *msg)
 int s_await_buffer_empty()
 {
 	int i;
+	int j=0;
 	while ((i =s_is_transmit_empty()) == 0)
 	{
-	s_await_buffer_empty;
+	s_await_buffer_empty();
+	j++;
+	if(j>1){return 0;}
 	}
 	return 1;
 }
