@@ -1,5 +1,5 @@
-C_SOURCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c)
-HEADERS = $(wildcard kernel/*.h drivers/*.h cpu/*.h)
+C_SOURCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c libc/*.c)
+HEADERS = $(wildcard kernel/*.h drivers/*.h cpu/*.h libc/*.h)
 OBJ = $(C_SOURCES:.c=.o)
 
 all: os-image
@@ -36,4 +36,4 @@ kernel/kmemory.o: kernel/kmemory.asm
 	nasm $< -f elf32 -o $@ -g
 
 clean:
-	rm -fr *.bin *.o kernel/*.o boot/*.bin drivers/*.o cpu/*.o
+	rm -fr *.bin *.o kernel/*.o boot/*.bin drivers/*.o cpu/*.o libc/*.o

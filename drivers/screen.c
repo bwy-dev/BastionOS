@@ -1,6 +1,6 @@
 #include "../kernel/ports.h"
 #include "../drivers/screen.h"
-#include "../kernel/mem.h"
+#include "../libc/mem.h"
 #include <stdarg.h> 
 /*-------------------------------------------
 These are the public functions for the class
@@ -21,7 +21,6 @@ void print(volatile unsigned char *msg, char att, int count, ...)
    		i++;
    		if(msg[i] == 'd')
    		{
-
    			unsigned char *var = va_arg(args, char*);
    			for (int j = 0; var[j] != 0; j++)
    			{
@@ -89,6 +88,8 @@ void print_char(volatile unsigned char c, int col, int row, char att)
 	mem_print_loc = (unsigned short*)VIDEO_ADDRESS + (offset/2) ;
 	*mem_print_loc = c | (att << 8);		
 	}
+
+	
 	
 	offset += 2;
 	set_cur(offset);
@@ -117,7 +118,6 @@ int scroll_screen(int offset)
 	if (cur_row(offset) <MAX_ROWS-1){return offset;}
 
 	memcpy((void*) (VIDEO_ADDRESS+(MAX_COLS*2)),VIDEO_ADDRESS, 24*MAX_COLS*2);
-
 	memset(0 ,(void*)(VIDEO_ADDRESS+(24*MAX_COLS*2)), MAX_COLS);
 
 	set_cur(get_cur()-(MAX_COLS*2));

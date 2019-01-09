@@ -9,7 +9,7 @@
 	mov si, MSG_REAL_MODE
 	call print_string
 	call load_kernel
-	call clear_screen
+	;call clear_screen
 	call switch_to_pm
 
 	jmp $
@@ -19,7 +19,7 @@
 %include "gdt.asm"
 %include "print_string_32.asm"
 %include "switch_to_pm.asm"
-%include "clear_screen.asm"
+;%include "clear_screen.asm"
 
 [bits 16]
 

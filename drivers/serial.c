@@ -1,5 +1,6 @@
 #include "../kernel/ports.h"
 #include "../drivers/serial.h"
+#include <stdarg.h>
 
 unsigned short com;
 unsigned short div;
@@ -93,8 +94,11 @@ void s_write(unsigned char c)
 	}
 }
 
-void s_print(unsigned char *msgtype, unsigned char *msg)
+void s_print(unsigned char *msgtype, unsigned char *msg, int count, ...)
 {
+	va_list args;
+	va_start(args, count);
+
 	int i;
 	
 	for(i = 0; msgtype[i] != 0; i++) 
@@ -102,12 +106,21 @@ void s_print(unsigned char *msgtype, unsigned char *msg)
    	s_write(msgtype[i]);     	
    }
 
-   i=0;
-
 	for(i = 0; msg[i] != 0; i++) 
    {
    	s_write(msg[i]);     	
    }
+   
+   for(int j = 0;j<count;j++)
+   {
+		unsigned char *var = va_arg(args, char*);
+		for (i = 0; var[i] != 0; i++)
+		{
+			s_write(var[i]);
+		}   	
+   }
+   va_end(args);
+
    s_write('\n');
 }
 

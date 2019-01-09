@@ -82,4 +82,5 @@ void isr_handler(registers_t r);
 typedef void (*isr_t)(registers_t);
 void register_interrupt_handler(unsigned char n, isr_t handler);
 void irq_handler(registers_t r);
+void irq_init();
 #endif

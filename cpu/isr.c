@@ -1,11 +1,11 @@
 #include "../cpu/isr.h"
 #include "../cpu/idt.h"
 #include "../drivers/screen.h"
-#include "../kernel/string_manip.h"
+#include "../libc/string.h"
 #include "../drivers/serial.h"
+#include "../drivers/keyboard.h"
 
 isr_t interrupt_handlers[256];
-int testing;
 /*TODO:
 	ADD ACTUAL WAYS TO CONFIRM EVERYTHING HAS BEEN CONFIGURED SUCCESSFULLY AND IS WORKING */
 void isr_install()
@@ -75,17 +75,13 @@ void isr_install()
 	print(" IRQs configured successfully.\n",WHITE_ON_BLACK,0);
 	set_idt();
 	print("IDT configured, Exceptions and PICs functioning.\n",WHITE_ON_BLACK,0);
-	s_print(SINFO, "IDT configured, interrupts enabled.\n");
+	s_print(SINFO, "IDT configured, interrupts enabled.\n",0);
 }
-
-
 
 void isr_handler(registers_t r)
 {
 	char b[8];
 	unsigned char* int_num = itoa(r.int_no, b, 10);
-	//unsigned char *SINTERRUPT = "[INTERRUPT]: ";
-	//unsigned char *SINFO = ;
 	unsigned char *exception_messages[] =
 		{
 	    "Division By Zero",
@@ -122,10 +118,19 @@ void isr_handler(registers_t r)
 	    "Reserved",
 	    "Reserved",
 		};
-
 		print("\n%drecieved interrupt %d : %d ", WHITE_ON_RED, 
 		2, SINTERRUPT, int_num, exception_messages[r.int_no]);
-		s_print(SINTERRUPT,exception_messages[r.int_no]);
+
+		char *eflags = itoa(r.eflags,b, 6);
+		char *esp = itoa(r.esp,b,6);
+		char *ebp = itoa(r.ebp,b,6);
+		char *edx = itoa(r.edx,b,6);
+		char *eax = itoa(r.eax,b,6);
+		char *ebx = itoa(r.ebx,b,6);
+		char *err = itoa(r.err_code,b,6);
+
+		s_print(SINTERRUPT,exception_messages[r.int_no],10," error code: 0x",err, " eflags: 0x",eflags,
+				  " stack pointer: 0x", esp, " stack bottom: 0x",ebp, " data reg: 0x", edx);
 }
 
 void register_interrupt_handler(unsigned char n, isr_t handler)
@@ -143,4 +148,10 @@ void irq_handler(registers_t r)
 		isr_t handler = interrupt_handlers[r.int_no];
 		handler(r);
 	}
+}
+
+void irq_init()
+{
+	asm volatile("sti");
+	keyboard_init();
 }

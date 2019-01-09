@@ -17,7 +17,7 @@
 #define MODEM_VAL 	0x03
 
 #define SINFO "[INFO]: "
-#define SINTERRUPT "[INTERRUPT}]: "
+#define SINTERRUPT "[INTERRUPT]: "
 #define SERROR "[ERROR]: "
 #define SDEBUG "[DEBUG]: "
 
@@ -28,7 +28,7 @@ int sconfig_buffer(unsigned char value);
 int sconfig_modem(unsigned char value);
 int  s_is_transmit_empty();
 void s_write(unsigned char c);
-void s_print(unsigned char* msgtype, unsigned char *msg);
+void s_print(unsigned char* msgtype, unsigned char *msg,int count, ...);
 int s_await_buffer_empty();
 
 #endif

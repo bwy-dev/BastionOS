@@ -2,13 +2,13 @@
 #include "../kernel/ports.h"
 #include "../cpu/isr.h"
 #include "../drivers/screen.h"
-#include "../kernel/string_manip.h"
+#include "../libc/string.h"
+#include "../libc/mem.h"
 
 static void keyboard_callback(registers_t regs)
 {
 	unsigned char scancode = port_byte_in(KEYBOARD_PORT);
 	char buffer[8];
-	print(itoa(scancode, buffer, 10), WHITE_ON_BLACK,0);
 	print_letter(scancode);
 }
 
@@ -59,10 +59,12 @@ void print_letter(unsigned char scancode) {
             print("+", WHITE_ON_BLACK,0);
             break;
         case 0x0E:
-            print("Backspace", WHITE_ON_BLACK,0);
+            //Backspace
+            memset(0,(void*)(VIDEO_ADDRESS + (get_cur()-2)),1);
+            set_cur(get_cur()-2);
             break;
         case 0x0F:
-            print("Tab", WHITE_ON_BLACK,0);
+            print("   ", WHITE_ON_BLACK,0);
             break;
         case 0x10:
             print("Q", WHITE_ON_BLACK,0);
@@ -101,7 +103,7 @@ void print_letter(unsigned char scancode) {
 				print("]", WHITE_ON_BLACK,0);
 				break;
 			case 0x1C:
-				print("ENTER", WHITE_ON_BLACK,0);
+				print("\n", WHITE_ON_BLACK,0);
 				break;
 			case 0x1D:
 				print("LCtrl", WHITE_ON_BLACK,0);
@@ -188,18 +190,7 @@ void print_letter(unsigned char scancode) {
             print("LAlt", WHITE_ON_BLACK,0);
             break;
         case 0x39:
-            print("Spc", WHITE_ON_BLACK,0);
-            break;
-        default:
-            /* 'keuyp' event corresponds to the 'keydown' + 0x80 
-             * it may still be a scancode we haven't implemented yet, or
-             * maybe a control/escape sequence */
-            if (scancode <= 0x7f) {
-                print("Unknown key down", WHITE_ON_BLACK,0);
-            } else if (scancode <= 0x39 + 0x80) {
-                print("key up ", WHITE_ON_BLACK,0);
-                print_letter(scancode - 0x80);
-            } else print("Unknown key up", WHITE_ON_BLACK,0);
+            print(" ", WHITE_ON_BLACK,0);
             break;
     }
 }

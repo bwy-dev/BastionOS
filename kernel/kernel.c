@@ -1,24 +1,26 @@
 #include "../drivers/screen.h"
 #include "../drivers/serial.h"
 #include "../kernel/kernel.h"
-#include "../kernel/string_manip.h"
+#include "../libc/string.h"
 #include "../cpu/isr.h"
 #include "../cpu/idt.h"
 #include "../cpu/paging.h"
 #include "../drivers/keyboard.h"
+
 void k_main()
 {
-	clear_screen();
-
-	print("Loading BastionOS...\n", GREEN_ON_BLACK,0);
+	print("\nSuccessfully booted into 32bit protected mode.\n",0x07,0);
+	print("\nLoading BastionOS...\n", GREEN_ON_BLACK,0);
 	print("Kernel version %d\n", GREEN_ON_BLACK,1,KERNEL_VER);
 	k_serial_setup();
+
 	print("Initializing interrupts...\n", WHITE_ON_BLACK,0);
 	isr_install();
+
+	__asm__ __volatile__("int $1");
 	print("Interrupts successfully initialized\n",WHITE_ON_BLACK,0);
 	pagefile_init();
-
-	keyboard_init();
+	irq_init();
 }
 
 void k_serial_setup()
@@ -74,7 +76,7 @@ void k_serial_setup()
 	}
 
 	print("Testing serial output...", WHITE_ON_BLACK,0);
-	s_print(SINFO, "BEGIN serial debugger output.\n");	
+	s_print(SINFO, "BEGIN serial debugger output.\n",0);	
 	int i = s_await_buffer_empty();
 	move_cur(MSG_OFFSET, cur_row(get_cur()));
 	if(i == 1)
