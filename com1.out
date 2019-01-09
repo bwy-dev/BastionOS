@@ -1,5 +1,0 @@
-[INFO]: BEGIN serial debugger output.
-
-[INFO]: IDT configured, interrupts enabled.
-
-[INTERRUPT]: Debug error code: 0x0 eflags: 0x0 stack pointer: 0x0 stack bottom: 0x0 data reg: 0x0
