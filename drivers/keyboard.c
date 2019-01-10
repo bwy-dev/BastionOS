@@ -7,7 +7,7 @@
 
 static void keyboard_callback(registers_t regs)
 {
-	unsigned char scancode = port_byte_in(KEYBOARD_PORT);
+	unsigned char scancode = port_inb(KEYBOARD_PORT);
 	char buffer[8];
 	print_letter(scancode);
 }

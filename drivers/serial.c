@@ -22,9 +22,9 @@ void s_set_port(unsigned short port)
 void sconfig_baud_rate(unsigned short divisor)
 {
 	div = divisor;
-	port_byte_out(LINE_COMMAND_PORT(com), LINE_ENABLE_DLAB);
-	port_byte_out(DATA_PORT(com), (divisor >>8) & 0x00ff);
-	port_byte_out(DATA_PORT(com), divisor & 0x00ff);
+	port_outb(LINE_COMMAND_PORT(com), LINE_ENABLE_DLAB);
+	port_outb(DATA_PORT(com), (divisor >>8) & 0x00ff);
+	port_outb(DATA_PORT(com), divisor & 0x00ff);
 }
 
 /*
@@ -43,8 +43,8 @@ void sconfig_baud_rate(unsigned short divisor)
 int sconfig_line(unsigned char value)
 {
 	if(value == 0){value = 0x03;}
-	port_byte_out(LINE_COMMAND_PORT(com), value);
-	return port_byte_in(LINE_COMMAND_PORT(com)) & value;
+	port_outb(LINE_COMMAND_PORT(com), value);
+	return port_inb(LINE_COMMAND_PORT(com)) & value;
 }
 
 /*
@@ -62,15 +62,15 @@ int sconfig_line(unsigned char value)
 int sconfig_buffer(unsigned char value)
 {
 	if(value == 0){value = 0xe7;}
-	port_byte_out(BUFFER_PORT(com), value);
+	port_outb(BUFFER_PORT(com), value);
 	return 1;
 }
 
 int sconfig_modem(unsigned char value)
 {
 	if(value == 0){value = 0x03;}
-	port_byte_out(MODEM_COMMAND_PORT(com), value);
-	return port_byte_in(MODEM_COMMAND_PORT(com)) & value;
+	port_outb(MODEM_COMMAND_PORT(com), value);
+	return port_inb(MODEM_COMMAND_PORT(com)) & value;
 }
 
 /*
@@ -79,14 +79,14 @@ int sconfig_modem(unsigned char value)
 */
 int s_is_transmit_empty()
 {
-	return port_byte_in(LINE_STATUS_PORT(com))& 0x20;
+	return port_inb(LINE_STATUS_PORT(com))& 0x20;
 }
 
 void s_write(unsigned char c)
 {
 	if(s_is_transmit_empty() != 0)
 	{
-		port_byte_out(DATA_PORT(com), c);
+		port_outb(DATA_PORT(com), c);
 	}
 	else
 	{

@@ -45,16 +45,16 @@ void isr_install()
 	set_idt_gate(31, (unsigned long)isr31);
 	print(" ISRs configured successfully\n", WHITE_ON_BLACK,0);
 	print("Setting up IRQs...",WHITE_ON_BLACK,0);
-	port_byte_out(0x20, 0x11);
-	port_byte_out(0xa0, 0x11);
-	port_byte_out(0x21, 0x20);
-	port_byte_out(0xa1, 0x28);
-	port_byte_out(0x21, 0x04);
-	port_byte_out(0xa1, 0x02);
-	port_byte_out(0x21, 0x01);
-	port_byte_out(0xa1, 0x01);
-	port_byte_out(0x21, 0x0);
-	port_byte_out(0xa1, 0x0);
+	port_outb(0x20, 0x11);
+	port_outb(0xa0, 0x11);
+	port_outb(0x21, 0x20);
+	port_outb(0xa1, 0x28);
+	port_outb(0x21, 0x04);
+	port_outb(0xa1, 0x02);
+	port_outb(0x21, 0x01);
+	port_outb(0xa1, 0x01);
+	port_outb(0x21, 0x0);
+	port_outb(0xa1, 0x0);
 
 	set_idt_gate(32, (unsigned long)irq0);
 	set_idt_gate(33, (unsigned long)irq1);
@@ -140,8 +140,8 @@ void register_interrupt_handler(unsigned char n, isr_t handler)
 
 void irq_handler(registers_t r)
 {
-	if (r.int_no >=40){port_byte_out(0xa0,0x20);}
-	port_byte_out(0x20,0x20);
+	if (r.int_no >=40){port_outb(0xa0,0x20);}
+	port_outb(0x20,0x20);
 
 	if(interrupt_handlers[r.int_no] != 0)
 	{

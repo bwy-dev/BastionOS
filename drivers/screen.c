@@ -97,20 +97,20 @@ void print_char(volatile unsigned char c, int col, int row, char att)
 
 int get_cur()
 {
-	port_byte_out(REG_SCREEN_CTRL, 14);
-	int offset = port_byte_in(REG_SCREEN_DATA) << 8;
-	port_byte_out(REG_SCREEN_CTRL, 15);
-	offset += port_byte_in(REG_SCREEN_DATA);
+	port_outb(REG_SCREEN_CTRL, 14);
+	int offset = port_inb(REG_SCREEN_DATA) << 8;
+	port_outb(REG_SCREEN_CTRL, 15);
+	offset += port_inb(REG_SCREEN_DATA);
 	return offset * 2;
 }
 
 void set_cur(int offset)
 {
 	offset /= 2;
-	port_byte_out(REG_SCREEN_CTRL, 14);
-	port_byte_out(REG_SCREEN_DATA, (unsigned char)(offset >> 8));
-	port_byte_out(REG_SCREEN_CTRL, 15);
-	port_byte_out(REG_SCREEN_DATA, (unsigned char)(offset));
+	port_outb(REG_SCREEN_CTRL, 14);
+	port_outb(REG_SCREEN_DATA, (unsigned char)(offset >> 8));
+	port_outb(REG_SCREEN_CTRL, 15);
+	port_outb(REG_SCREEN_DATA, (unsigned char)(offset));
 }
 
 int scroll_screen(int offset)

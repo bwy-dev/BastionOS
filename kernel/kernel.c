@@ -16,9 +16,7 @@ void k_main()
 
 	print("Initializing interrupts...\n", WHITE_ON_BLACK,0);
 	isr_install();
-
-	__asm__ __volatile__("int $1");
-	print("Interrupts successfully initialized\n",WHITE_ON_BLACK,0);
+	print("\nInterrupts successfully initialized\n",WHITE_ON_BLACK,0);
 	pagefile_init();
 	irq_init();
 }
