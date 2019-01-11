@@ -6,6 +6,7 @@
 #include "../cpu/idt.h"
 #include "../cpu/paging.h"
 #include "../drivers/keyboard.h"
+#include "../drivers/pci.h"
 
 void k_main()
 {
@@ -19,6 +20,7 @@ void k_main()
 	print("\nInterrupts successfully initialized\n",WHITE_ON_BLACK,0);
 	pagefile_init();
 	irq_init();
+	pci_check_for_ahci();
 }
 
 void k_serial_setup()

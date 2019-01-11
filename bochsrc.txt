@@ -505,7 +505,7 @@ keyboard_mapping: enabled=0, map=
 # Example:
 #   i440fxsupport: enabled=1, slot1=pcivga, slot2=ne2k
 #=======================================================================
-i440fxsupport: enabled=1
+i440fxsupport: enabled=1 slot1=pcidev
 
 #=======================================================================
 # USB1:
